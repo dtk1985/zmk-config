@@ -1,0 +1,61 @@
+/*
+ * ZMK Device Tree Overlay for Sick68 Handwired (sick68_hw)
+ * Controller: nice_nano_v2
+ *
+ * This mapping translates the QMK ATmega32u4 pins to the ZMK &pro_micro pin numbers.
+ */
+
+#include <dt-bindings/zmk/matrix.h>
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,matrix_transform = &transform;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        
+        // Matches the "COL2ROW" diode direction in your QMK configuration.
+        // (Anode/signal on Column pin, Cathode/band on Row pin).
+        diode-direction = "col2row";
+
+        // QMK Rows: ["D3", "D2", "D1", "D0", "D4"] (5 pins)
+        // These map to Pro Micro physical pins D1, D0, D2, D3, D4 (ZMK pins 1, 0, 2, 3, 4)
+        row-gpios = <
+            &pro_micro 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)
+            &pro_micro 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)
+            &pro_micro 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)
+            &pro_micro 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)
+            &pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)
+        >;
+
+        // QMK Cols: ["C6", "D7", "E6", "B4", "B5", "B0", "D5", "B6", "B2", "B3", "B1", "F7", "F6", "F5", "F4"] (15 pins)
+        // These map to Pro Micro physical pins D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, A0, A1, A2, A3 (ZMK pins 5-15, 18-21)
+        col-gpios = <
+            &pro_micro 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+        >;
+    };
+
+    transform: matrix_transform {
+        compatible = "zmk,matrix-transform";
+        rows = <5>; // 5 rows
+        cols = <15>; // 15 columns
+    };
+};
+
