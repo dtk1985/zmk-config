@@ -1,67 +1,92 @@
 /*
  * ZMK Device Tree Overlay for Sick68 Handwired (sick68_hw)
- * Controller: nice_nano_v2
+ * Controller: nice_nano_v2 / SuperMini nRF52840
  *
- * This mapping translates the QMK ATmega32u4 pins to the ZMK &pro_micro pin numbers.
+ * QMK Pin Mapping from keyboard.json:
+ *   Rows: ["D3", "D2", "D1", "D0", "D4"]
+ *   Cols: ["C6", "D7", "E6", "B4", "B5", "B0", "D5", "B6", "B2", "B3", "B1", "F7", "F6", "F5", "F4"]
+ *
+ * QMK ATmega32u4 to ZMK pro_micro pin translation:
+ *   D0=3, D1=2, D2=1, D3=0, D4=4, C6=5, D7=6, E6=7, B4=8, B5=9, B6=10
+ *   B2=16(MOSI), B3=14(MISO), B1=15(SCK), F7=18(A0), F6=19(A1), F5=20(A2), F4=21(A3)
+ *
+ * IMPORTANT: The QMK config uses B0 and D5 which are NOT on the pro_micro connector.
+ * For nice_nano/SuperMini, you need to either:
+ *   1. Rewire those 2 columns to available GPIO pins P1.01 and P1.02, OR
+ *   2. Choose different pins that are physically accessible on your board
+ *
+ * Available pro_micro pins: 0-10, 14, 15, 16, 18, 19, 20, 21 (18 pins total)
+ * Required pins: 5 rows + 15 cols = 20 pins
+ * Solution: Use 2 direct GPIO pins (P1.01 and P1.02) for B0 and D5 columns
+ *           These may require soldering to test pads on the SuperMini board
  */
 
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/zmk/matrix_transform.h>
 
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,physical-layout = &default_layout;
+        zmk,matrix-transform = &transform;
     };
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
         
-        // Matches the "COL2ROW" diode direction in your QMK configuration.
-        // (Anode/signal on Column pin, Cathode/band on Row pin).
+        // COL2ROW diode direction (same as QMK config)
         diode-direction = "col2row";
 
-        // QMK Rows: ["D3", "D2", "D1", "D0", "D4"] (5 pins)
-        // These map to Pro Micro physical pins D1, D0, D2, D3, D4 (ZMK pins 1, 0, 2, 3, 4)
+        // QMK Rows: ["D3", "D2", "D1", "D0", "D4"]
+        // Mapped to ZMK pro_micro: D3=0, D2=1, D1=2, D0=3, D4=4
         row-gpios = <
-            &pro_micro 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)
             &pro_micro 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)
+            &pro_micro 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)
             &pro_micro 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)
             &pro_micro 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)
             &pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)
         >;
 
-        // QMK Cols: ["C6", "D7", "E6", "B4", "B5", "B0", "D5", "B6", "B2", "B3", "B1", "F7", "F6", "F5", "F4"] (15 pins)
-        // Map to available pro_micro pins
+        // QMK Cols: ["C6", "D7", "E6", "B4", "B5", "B0", "D5", "B6", "B2", "B3", "B1", "F7", "F6", "F5", "F4"]
+        // Mapped to ZMK:
+        //   C6=5, D7=6, E6=7, B4=8, B5=9
+        //   B0 -> P1.01 (wire to this GPIO pin)
+        //   D5 -> P1.02 (wire to this GPIO pin)
+        //   B6=10, B2=16, B3=14, B1=15, F7=18, F6=19, F5=20, F4=21
         col-gpios = <
             &pro_micro 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &gpio1 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &gpio1 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
-            &pro_micro 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
-            &pro_micro 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
-            &pro_micro 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
-            &pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
-            &pro_micro 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
         >;
     };
 
     transform: matrix_transform {
         compatible = "zmk,matrix-transform";
         rows = <5>;
-        cols = <15>;
-    };
+        columns = <15>;
 
-    default_layout: physical_layout_0 {
-        compatible = "zmk,physical-layout";
-        display-name = "Default Layout";
-        kscan = <&kscan0>;
-        transform = <&transform>;
+        // LAYOUT_65_ansi matrix mapping from QMK keyboard.json
+        // 68 keys total for sick68
+        // RC(row, col) format - corresponds to physical key positions
+        map = <
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5) RC(0,6) RC(0,7) RC(0,8) RC(0,9) RC(0,10) RC(0,11) RC(0,12) RC(0,13) RC(0,14)
+            RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5) RC(1,6) RC(1,7) RC(1,8) RC(1,9) RC(1,10) RC(1,11) RC(1,12) RC(1,13) RC(1,14)
+            RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5) RC(2,6) RC(2,7) RC(2,8) RC(2,9) RC(2,10) RC(2,11)          RC(2,13) RC(2,14)
+            RC(3,0)         RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(3,6) RC(3,7) RC(3,8) RC(3,9) RC(3,10) RC(3,11) RC(3,12) RC(3,13) RC(3,14)
+            RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)                 RC(4,9) RC(4,10) RC(4,11) RC(4,12) RC(4,13) RC(4,14)
+        >;
     };
 };
 
