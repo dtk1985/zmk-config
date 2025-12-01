@@ -11,7 +11,7 @@
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &transform;
+        zmk,physical-layout = &default_layout;
     };
 
     kscan0: kscan {
@@ -54,8 +54,15 @@
 
     transform: matrix_transform {
         compatible = "zmk,matrix-transform";
-        rows = <5>; // 5 rows
-        cols = <15>; // 15 columns
+        rows = <5>;
+        cols = <15>;
+    };
+
+    default_layout: physical_layout_0 {
+        compatible = "zmk,physical-layout";
+        display-name = "Default Layout";
+        kscan = <&kscan0>;
+        transform = <&transform>;
     };
 };
 

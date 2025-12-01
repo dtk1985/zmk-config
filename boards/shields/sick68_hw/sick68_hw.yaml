@@ -1,11 +1,11 @@
 file_format: "1"
-data:
-  name: Sick68 HW
-  type: shield
-  url: https://github.com/dtk1985/zmk-config
-  author: dtk1985
-  features:
-    - keys
+id: sick68_hw
+name: Sick68 HW
+type: shield
+url: https://github.com/dtk1985/zmk-config
+requires: [pro_micro]
+features:
+  - keys
 
 config:
   ZMK_KEYBOARD_NAME: Sick68 HW
