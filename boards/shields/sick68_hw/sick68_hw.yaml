@@ -7,8 +7,5 @@ data:
   features:
     - keys
 
-siblings:
-  - sick68_hw
-
 config:
   ZMK_KEYBOARD_NAME: Sick68 HW
