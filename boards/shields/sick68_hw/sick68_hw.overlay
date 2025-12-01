@@ -5,7 +5,6 @@
  * This mapping translates the QMK ATmega32u4 pins to the ZMK &pro_micro pin numbers.
  */
 
-#include <dt-bindings/zmk/matrix.h>
 #include <dt-bindings/gpio/gpio.h>
 
 / {
