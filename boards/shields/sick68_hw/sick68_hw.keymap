@@ -31,32 +31,13 @@
         fn_layer {
             display-name = "Function";
             // 68 keys matching LAYOUT_65_ansi
-            // FN key (row 4, col 10) maps to mo 1 for momentary activation
             bindings = <
         &trans      &kp F1       &kp F2       &kp F3       &kp F4       &kp F5       &kp F6       &kp F7       &kp F8       &kp F9       &kp F10      &kp F11      &kp F12      &kp DELETE     &kp INSERT
         &trans      &trans       &kp UP       &trans       &trans       &trans       &trans       &trans       &trans       &trans       &trans       &trans       &trans       &trans         &kp HOME
         &trans      &kp LEFT     &kp DOWN     &kp RIGHT    &trans       &trans       &trans       &trans       &trans       &trans       &trans       &trans                    &trans         &kp END
         &trans                   &trans       &trans       &trans       &trans       &trans       &trans       &trans       &trans       &trans       &trans       &trans       &trans         &trans
-        &trans      &trans       &trans                                              &trans                                 &trans       &studio_unlock &trans       &trans       &trans         &trans
+        &trans      &trans       &trans                                              &trans                                 &trans       &trans       &trans       &trans       &trans         &trans
       >;
-        };
-
-        // Reserved layers for ZMK Studio expansion
-        // Users can add up to 16 total layers; these are placeholders for future use via ZMK Studio
-        reserved_layer_2 {
-            status = "reserved";
-        };
-
-        reserved_layer_3 {
-            status = "reserved";
-        };
-
-        reserved_layer_4 {
-            status = "reserved";
-        };
-
-        reserved_layer_5 {
-            status = "reserved";
         };
     };
 };
