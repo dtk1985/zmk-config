@@ -6,6 +6,7 @@ url: https://github.com/dtk1985/zmk-config
 requires: [pro_micro]
 features:
   - keys
+  - studio
 
 config:
   ZMK_KEYBOARD_NAME: Sick68 HW
