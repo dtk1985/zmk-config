@@ -31,7 +31,7 @@
         >;
 
         // QMK Cols: ["C6", "D7", "E6", "B4", "B5", "B0", "D5", "B6", "B2", "B3", "B1", "F7", "F6", "F5", "F4"] (15 pins)
-        // These map to Pro Micro physical pins D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, A0, A1, A2, A3 (ZMK pins 5-15, 18-21)
+        // Map to available pro_micro pins
         col-gpios = <
             &pro_micro 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
@@ -44,10 +44,10 @@
             &pro_micro 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
+            &pro_micro 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
             &pro_micro 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
-            &pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
-            &pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)
         >;
     };
 
